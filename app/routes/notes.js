@@ -17,5 +17,29 @@ router.post('/',withAuth,async(req,res)=>{
     }
 })
 
+router.get('/:id',withAuth,async(req,res)=>{
+    try {
+    const {id} = req.params;
+    let note = await Note.findById(id)
+
+    if(isOwner(req.user,note))
+       res.json(note)
+    else
+       res.status(403).json({error:'você não tem permissão para acessar essa nota!'})  
+
+    } catch (error) {
+        res.status(500).json({error:'Erro ao pegar nota!'})  
+    }
+})
+
+
+//verifica se o usuario é dono de uma nota
+const isOwner=(user,note)=>{
+    if(JSON.stringify(user.id) == JSON.stringify(note.author._id))
+    return true
+    else{
+        return false;
+    }
+}
 
 module.exports = router;
