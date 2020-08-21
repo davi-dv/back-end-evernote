@@ -13,5 +13,5 @@ let notSchema = new mongoose.Schema({
     }
 })
 
-modules.exports = mongoose.model('Note',notSchema);
+module.exports = mongoose.model('Note',notSchema);
 

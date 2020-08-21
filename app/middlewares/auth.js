@@ -13,11 +13,11 @@ const withAuth = (req,res,next)=>{
     if(!token)
       res.status(401).json({error:'não autorizado,token não encontrado'})
     else{
-        jwt.verify(token,secret,(err,decode)=>{
+        jwt.verify(token,secret,(err,decoded)=>{
             if(err)
-            res.status(401).json({error:'token inválido!'})
+            res.status(401).json({error:'nao autorizado,token inválido!'})
             else{
-                req.email = decode.email;
+                req.email = decoded.email;
                 User.findOne({email:decoded.email})
                 .then(user=>{
                     req.user=user
