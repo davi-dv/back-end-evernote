@@ -26,4 +26,15 @@ userSchema.pre('save', function (next) {
         )
     }
 })
+
+//compara senha com o hash no banco
+userSchema.methods.isCorrectPassword = function(password,callback){
+    bcrypt.compare(password,this.password,function(err,same){
+        if(err)
+        callback(err)
+        else
+            callback(err,same)
+        
+    })
+}
 module.exports = mongoose.model('User', userSchema)
