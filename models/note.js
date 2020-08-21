@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 
-
+//criaa schema das nota no banco
 let notSchema = new mongoose.Schema({
     title:String,
     body:String,
