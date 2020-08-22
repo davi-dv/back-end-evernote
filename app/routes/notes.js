@@ -1,7 +1,8 @@
 var express = require('express');
 var router = express.Router();
 const Note = require('../../models/note');
-const withAuth = require('../middlewares/auth')
+const withAuth = require('../middlewares/auth');
+const note = require('../../models/note');
 
 
 //coloquei o withAuth para antes de fazer o post verificar se o usuario está autenticado
@@ -17,11 +18,13 @@ router.post('/',withAuth,async(req,res)=>{
     }
 })
 
+//baixa uma nota
 router.get('/:id',withAuth,async(req,res)=>{
     try {
     const {id} = req.params;
     let note = await Note.findById(id)
-
+    
+     //confere se o usuário é dono da nota que vai baixar
     if(isOwner(req.user,note))
        res.json(note)
     else
@@ -32,10 +35,23 @@ router.get('/:id',withAuth,async(req,res)=>{
     }
 })
 
+//busca por todas as nota de um usuário
+router.get('/',withAuth,async(req,res)=>{
+    try {
+        let notes = await note.find({author:req.user._id})
+        res.json(notes)
+    } catch (error) {
+        res.json({error:error}).status(500);
+        
+    }
+})
 
-//verifica se o usuario é dono de uma nota
+
+
+
+//essa função verifica se o usuario é dono de uma nota
 const isOwner=(user,note)=>{
-    if(JSON.stringify(user.id) == JSON.stringify(note.author._id))
+    if(JSON.stringify(user._id) == JSON.stringify(note.author._id))
     return true
     else{
         return false;
