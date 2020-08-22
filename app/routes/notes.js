@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 const Note = require('../../models/note');
 const withAuth = require('../middlewares/auth');
-const note = require('../../models/note');
+
 
 
 //coloquei o withAuth para antes de fazer o post verificar se o usuario está autenticado
@@ -46,7 +46,32 @@ router.get('/',withAuth,async(req,res)=>{
     }
 })
 
+//para alterar uma nota já existente
+router.put('/:id',withAuth,async(req,res)=>{
+    const {title,body} = req.body;
 
+    const {id} = req.params
+
+    try {
+        let note = await Note.findById(id)
+        if(isOwner(req.user,note)){
+            
+            let note = await Note.findOneAndUpdate(
+                {_id:id},
+                {$set:{title:title,body:body}},
+                {upsert:true,'new':true}
+                );
+
+                res.json(note)
+        }else{
+            res.status(403).json({error:'permissão negada!'})
+        }
+        
+        
+    } catch (error) {
+        res.status(500).json({error:'Erro ao atualizar nota!'})
+    }
+})
 
 
 //essa função verifica se o usuario é dono de uma nota
