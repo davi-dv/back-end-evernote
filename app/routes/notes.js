@@ -19,6 +19,8 @@ router.post('/',withAuth,async(req,res)=>{
     }
 })
 
+//procura uma nota atraves da query passada por um usuario
+//indexado campos title,body no mongo para consulta
 router.get('/search',withAuth,async(req,res)=>{
     const{ query } =req.query;
     try {
