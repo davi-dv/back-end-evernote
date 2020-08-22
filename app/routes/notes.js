@@ -5,6 +5,7 @@ const withAuth = require('../middlewares/auth');
 
 
 
+
 //coloquei o withAuth para antes de fazer o post verificar se o usuario está autenticado
 router.post('/',withAuth,async(req,res)=>{
     const {title,body} = req.body;
@@ -16,6 +17,19 @@ router.post('/',withAuth,async(req,res)=>{
     } catch (error) {
         res.status(500).json({error:'Erro ao criar uma nova nota!'})
     }
+})
+
+router.get('/search',withAuth,async(req,res)=>{
+    const{ query } =req.query;
+    try {
+        let notes = await Note
+        .find({author:req.user._id})
+        .find({$text:{$search:query}})      
+        res.json(notes)
+    } catch (error) {
+        res.json({error:error}).status(500)
+    }
+
 })
 
 //baixa uma nota

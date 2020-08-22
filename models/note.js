@@ -13,5 +13,8 @@ let notSchema = new mongoose.Schema({
     }
 })
 
+notSchema.index({'title': 'text', 'body': 'text'});
+
+
 module.exports = mongoose.model('Note',notSchema);
 
