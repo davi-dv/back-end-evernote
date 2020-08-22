@@ -38,7 +38,7 @@ router.get('/:id',withAuth,async(req,res)=>{
 //busca por todas as nota de um usuário
 router.get('/',withAuth,async(req,res)=>{
     try {
-        let notes = await note.find({author:req.user._id})
+        let notes = await Note.find({author:req.user._id})
         res.json(notes)
     } catch (error) {
         res.json({error:error}).status(500);
@@ -73,6 +73,26 @@ router.put('/:id',withAuth,async(req,res)=>{
     }
 })
 
+//deleta nota buscando pelo id 
+router.delete('/:id',withAuth,async(req,res)=>{
+    const {id} = req.params
+
+    try {
+        //procura a nota por id
+        let note = await Note.findById(id)
+       
+        //conefere se o usuario é dono da nota
+        if(isOwner(req.user,note)){
+            await note.delete();
+            res.json({message:'Nota deletada com sucesso!'}).status(204)
+        }else{
+            res.status(403).json({error:'permissão negada!'})
+        }
+
+    } catch (error) {
+        res.status(500).json({error:'Erro ao deletar nota!'})  
+    }
+})
 
 //essa função verifica se o usuario é dono de uma nota
 const isOwner=(user,note)=>{
