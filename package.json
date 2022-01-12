@@ -2,6 +2,9 @@
   "name": "back-end",
   "version": "0.0.0",
   "private": true,
+  "engines": { 
+    "node": "10.16.0" 
+  },  
   "scripts": {
     "start": "nodemon node ./bin/www",
     "dev": "nodemon"
